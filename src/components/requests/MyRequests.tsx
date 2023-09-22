@@ -84,7 +84,7 @@ export default function MyRequests({
           </select>
           <label className='block text-sm font-medium'>
             Request uses the current marker location{' '}
-            {'(Hold mouse on Map to select location)'}.
+            {'(Click on Map to select location)'}.
           </label>
         </form>
       </Modal>
