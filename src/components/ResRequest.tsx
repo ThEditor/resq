@@ -1,5 +1,4 @@
 import clsxm from '@/lib/clsxm';
-import timeToRelativeTime from '@/lib/timeToRelativeTime';
 
 export interface IResRequest {
   name: string;
@@ -20,7 +19,11 @@ export default function ResRequest({
   time,
 }: ResRequestProps) {
   return (
-    <div className='relative flex w-96 flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md'>
+    <div
+      className={clsxm(
+        'relative flex w-96 flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md'
+      )}
+    >
       <div className='p-6'>
         {}
         <h5 className='text-blue-gray-900 mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal antialiased'>
@@ -41,9 +44,6 @@ export default function ResRequest({
         >
           Accept
         </button>
-        <div className='block font-sans text-base font-light leading-relaxed text-inherit antialiased'>
-          {timeToRelativeTime(time)}
-        </div>
       </div>
     </div>
   );
