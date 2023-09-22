@@ -1,3 +1,4 @@
+import AgencySelector from '@/components/requests/AgencySelector';
 import { useState } from 'react';
 import Modal from 'react-modal';
 
@@ -22,17 +23,9 @@ export default function MyRequests({
     setIsOpen(false);
   }
 
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const tagOptions = ['Tag1', 'Tag2', 'Tag3', 'Tag4', 'Tag5'];
+  const [selectedAgencies, setSelectedAgencies] = useState<string[]>([]);
 
-  const handleTagChange = (e: any) => {
-    const selectedOptions = Array.from(
-      e.target.selectedOptions,
-      (option: { value: string }) => option.value
-    );
-    setSelectedTags(selectedOptions);
-    console.log(selectedOptions);
-  };
+  const handleSubmit = (e: any) => {};
   return (
     <div>
       <button
@@ -61,31 +54,22 @@ export default function MyRequests({
         onRequestClose={closeModal}
       >
         <button onClick={closeModal}>close</button>
-        <form className='flex flex-col gap-4 text-black'>
+        <form
+          className='flex flex-col gap-4 text-black'
+          onSubmit={handleSubmit}
+        >
           <h3>Create a new Request</h3>
           <input placeholder='Name' />
           <input placeholder='Address' />
           <label htmlFor='tags' className='block text-sm font-medium'>
             Select Agency Type {'(Hold Control/Shift for multiple)'}:
           </label>
-          <select
-            id='tags'
-            name='tags'
-            multiple
-            className='min-h-[10rem] w-full rounded-md border px-3 py-2 focus:border-blue-500 focus:outline-none'
-            value={selectedTags}
-            onChange={handleTagChange}
-          >
-            {tagOptions.map((tag) => (
-              <option key={tag} value={tag}>
-                {tag}
-              </option>
-            ))}
-          </select>
+          <AgencySelector />
           <label className='block text-sm font-medium'>
             Request uses the current marker location{' '}
             {'(Click on Map to select location)'}.
           </label>
+          <button type='submit'>Create</button>
         </form>
       </Modal>
     </div>
