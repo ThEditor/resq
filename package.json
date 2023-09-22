@@ -1,0 +1,39 @@
+{
+  "name": "sih-rescue",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit --incremental false",
+    "postbuild": "next-sitemap --config next-sitemap.config.js"
+  },
+  "dependencies": {
+    "axios": "^1.4.0",
+    "clsx": "^1.2.1",
+    "next": "^13.4.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.8.0",
+    "tailwind-merge": "^1.12.0"
+  },
+  "devDependencies": {
+    "@svgr/webpack": "^6.5.1",
+    "@tailwindcss/forms": "^0.5.3",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@types/react": "^18.2.6",
+    "@typescript-eslint/eslint-plugin": "^5.59.6",
+    "@typescript-eslint/parser": "^5.59.6",
+    "autoprefixer": "^10.4.14",
+    "next-router-mock": "^0.7.5",
+    "next-sitemap": "^2.5.28",
+    "postcss": "^8.4.23",
+    "prettier": "^2.8.8",
+    "prettier-plugin-tailwindcss": "^0.1.13",
+    "tailwindcss": "^3.3.2",
+    "typescript": "^4.9.5"
+  }
+}
