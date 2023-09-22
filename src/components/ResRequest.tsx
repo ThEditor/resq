@@ -4,7 +4,6 @@ export interface IResRequest {
   name: string;
   details: string;
   location: [number, number];
-  time: Date;
 }
 
 export interface ResRequestProps extends IResRequest {
@@ -16,7 +15,6 @@ export default function ResRequest({
   name,
   details,
   location,
-  time,
 }: ResRequestProps) {
   return (
     <div

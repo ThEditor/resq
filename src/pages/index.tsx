@@ -5,7 +5,6 @@ const data: IResRequest[] = [
     name: 'Looking for Meds',
     details: 'Insulin needed',
     location: [1, 2],
-    time: new Date(),
   },
 ];
 
@@ -19,7 +18,6 @@ export default function HomePage() {
           name={v.name}
           details={v.details}
           location={v.location}
-          time={v.time}
         />
       ))}
     </div>
