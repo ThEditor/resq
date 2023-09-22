@@ -25,7 +25,7 @@ export default function HomePage() {
         onClick={(loc: [number, number]) => setRequestMarkerLocation(loc)}
         className='absolute -z-50'
       />
-      <div className='absolute right-0 top-0 flex h-screen min-w-[33%] flex-col items-center gap-4 overflow-y-scroll bg-slate-300 p-10'>
+      <div className='absolute rounded-3xl right-4 top-4 bottom-4 flex min-w-[33%] flex-col items-center gap-4 overflow-y-scroll bg-slate-300 p-5'>
         <Switcher
           isChecked={sctn != Sctn.CURRENT}
           handleCheckboxChange={() => {
