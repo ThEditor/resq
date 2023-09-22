@@ -1,6 +1,6 @@
 import ResRequest, { IResRequest } from '@/components/ResRequest';
 import clsxm from '@/lib/clsxm';
-import { Dispatch, SetStateAction, useRef, useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 
 const data: IResRequest[] = [
   {

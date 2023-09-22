@@ -11,12 +11,18 @@ enum Sctn {
 export default function HomePage() {
   const mapRef = useRef<any>(null);
   const [current, setCurrent] = useState<[number, number]>([12.9716, 77.5946]);
+  const [requestMarkerLocation, setRequestMarkerLocation] = useState<
+    [number, number]
+  >([0, 0]);
   const [sctn, setSctn] = useState(Sctn.CURRENT);
   return (
     <div>
       <Map
         containerRef={mapRef}
         markerPosition={current}
+        requestMarkerLocation={requestMarkerLocation}
+        setRequestMarkerLocation={setRequestMarkerLocation}
+        onClick={(loc: [number, number]) => setRequestMarkerLocation(loc)}
         className='absolute -z-50'
       />
       <div className='absolute right-0 top-0 flex h-screen min-w-[33%] flex-col items-center gap-4 overflow-y-scroll bg-slate-300 p-10'>
@@ -30,7 +36,7 @@ export default function HomePage() {
         {sctn == Sctn.CURRENT ? (
           <CurrentRequests mapRef={mapRef} setCurrentLocation={setCurrent} />
         ) : (
-          <MyRequests />
+          <MyRequests requestMarkerLocation={requestMarkerLocation} />
         )}
       </div>
     </div>

@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import Modal from 'react-modal';
-export default function MyRequests() {
+
+export interface MyRequestsProps {
+  className?: string;
+  requestMarkerLocation?: [number, number];
+}
+
+export default function MyRequests({
+  className,
+  requestMarkerLocation,
+}: MyRequestsProps) {
   const [modalIsOpen, setIsOpen] = useState(false);
 
   function openModal() {
@@ -74,7 +83,8 @@ export default function MyRequests() {
             ))}
           </select>
           <label className='block text-sm font-medium'>
-            Request uses the current marker location.
+            Request uses the current marker location{' '}
+            {'(Hold mouse on Map to select location)'}.
           </label>
         </form>
       </Modal>
