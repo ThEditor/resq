@@ -1,4 +1,5 @@
 import clsxm from '@/lib/clsxm';
+import { DetailedHTMLProps, HTMLAttributes } from 'react';
 
 export interface IResRequest {
   name: string;
@@ -6,19 +7,22 @@ export interface IResRequest {
   location: [number, number];
 }
 
-export interface ResRequestProps extends IResRequest {
-  className?: string;
-}
+export interface ResRequestProps
+  extends IResRequest,
+    DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {}
 
 export default function ResRequest({
   className,
   name,
   details,
   location,
+  ...rest
 }: ResRequestProps) {
   return (
     <div
+      {...rest}
       className={clsxm(
+        className,
         'relative flex w-96 flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md'
       )}
     >
@@ -33,15 +37,6 @@ export default function ResRequest({
         <p className='block font-sans text-base font-light leading-relaxed text-inherit antialiased'>
           {details}
         </p>
-      </div>
-      <div className='flex items-center gap-4 p-6 pt-0'>
-        <button
-          className='select-none rounded-lg bg-green-500 px-6 py-3 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none'
-          type='button'
-          data-ripple-light='true'
-        >
-          Accept
-        </button>
       </div>
     </div>
   );
