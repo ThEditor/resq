@@ -19,7 +19,7 @@ export default function CurrentRequests({
   const [data, setData] = useState<IAgency[]>([]);
   useEffect(() => {
     axios.get(`/agencies/assignedto?id=${token?._id ?? ''}`).then((x) => {
-      if (!x.data.err) setData(x.data);
+      if (x.data) setData(x.data);
     });
   }, []);
   const moveTo = (location: [number, number]) => {
