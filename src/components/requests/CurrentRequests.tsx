@@ -1,5 +1,6 @@
 import ResRequest, { IResRequest } from '@/components/ResRequest';
 import { IAgency } from '@/components/requests/AgencySelector';
+import { token } from '@/constant/env';
 import axios from '@/lib/api/axios';
 import clsxm from '@/lib/clsxm';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
@@ -17,8 +18,8 @@ export default function CurrentRequests({
 }: CurrentRequestsProps) {
   const [data, setData] = useState<IAgency[]>([]);
   useEffect(() => {
-    axios.get('/agencies').then((x) => {
-      setData(x.data);
+    axios.get(`/agencies/assignedto?id=${token?._id ?? ''}`).then((x) => {
+      if (!x.data.err) setData(x.data);
     });
   }, []);
   const moveTo = (location: [number, number]) => {
