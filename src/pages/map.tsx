@@ -3,7 +3,12 @@ import { IAgency } from '@/components/requests/AgencySelector';
 import CurrentRequests from '@/components/requests/CurrentRequests';
 import MyRequests from '@/components/requests/MyRequests';
 import { useRef, useState } from 'react';
-import { Sctn, Switcher } from '.';
+import Modal from 'react-modal';
+
+enum Sctn {
+  CURRENT,
+  MY,
+}
 
 export default function HomePage() {
   const mapRef = useRef<any>(null);
@@ -28,6 +33,10 @@ export default function HomePage() {
     setAgency(agency);
     openModal();
   };
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    closeModal();
+  };
   return (
     <div>
       <Map
@@ -50,7 +59,7 @@ export default function HomePage() {
         {sctn == Sctn.CURRENT ? (
           <CurrentRequests mapRef={mapRef} setCurrentLocation={setCurrent} />
         ) : (
-          <MyRequests requestMarkerLocation={requestMarkerLocation} />
+          <MyRequests />
         )}
       </div>
       <Modal
@@ -63,19 +72,57 @@ export default function HomePage() {
           className='flex flex-col gap-4 text-black'
           onSubmit={handleSubmit}
         >
-          <h3>Create a new Request</h3>
-          <input placeholder='Name' />
-          <input placeholder='Address' />
-          <label htmlFor='tags' className='block text-sm font-medium'>
-            Select Agency Type {'(Hold Control/Shift for multiple)'}:
-          </label>
+          <h3>Create request for {agency?.name}</h3>
+          <input placeholder='Name' required />
+          <input placeholder='Address' required />
           <label className='block text-sm font-medium'>
-            Request uses the current marker location{' '}
+            Request uses the current red marker location{' '}
             {'(Double Click on Map to select location)'}.
           </label>
-          <button type='submit'>Create</button>
+          <button
+            className='select-none rounded-lg bg-green-500 px-6 py-3 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none'
+            type='submit'
+            data-ripple-light='true'
+          >
+            Create
+          </button>
         </form>
       </Modal>
+    </div>
+  );
+}
+
+function Switcher({
+  isChecked,
+  handleCheckboxChange,
+}: {
+  isChecked: boolean;
+  handleCheckboxChange: () => void;
+}) {
+  return (
+    <div className='text-black'>
+      <label className='themeSwitcherTwo shadow-card relative inline-flex cursor-pointer select-none items-center justify-center rounded-md bg-white p-1'>
+        <input
+          type='checkbox'
+          className='sr-only'
+          checked={isChecked}
+          onChange={handleCheckboxChange}
+        />
+        <span
+          className={`flex items-center space-x-[6px] rounded px-[18px] py-2 text-sm font-medium ${
+            !isChecked ? 'text-primary bg-[#d5d8de]' : 'text-body-color'
+          }`}
+        >
+          Current Requests
+        </span>
+        <span
+          className={`flex items-center space-x-[6px] rounded px-[18px] py-2 text-sm font-medium ${
+            isChecked ? 'text-primary bg-[#d5d8de]' : 'text-body-color'
+          }`}
+        >
+          My Requests
+        </span>
+      </label>
     </div>
   );
 }

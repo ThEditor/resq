@@ -1,125 +1,100 @@
-import Map from '@/components/map';
-import { IAgency } from '@/components/requests/AgencySelector';
-import CurrentRequests from '@/components/requests/CurrentRequests';
-import MyRequests from '@/components/requests/MyRequests';
-import { useRef, useState } from 'react';
-import Modal from 'react-modal';
+import InputBox from '@/components/InputBox';
+import MessageBox from '@/components/MessageBox';
+import TextButton from '@/components/buttons/TextButton';
+import { setToken, token } from '@/constant/env';
+import axios from '@/lib/api/axios';
+import { isAxiosError } from 'axios';
+import { useRouter } from 'next/router';
+import { useState, useEffect } from 'react';
 
-enum Sctn {
-  CURRENT,
-  MY,
-}
-
-export default function HomePage() {
-  const mapRef = useRef<any>(null);
-  const [current, setCurrent] = useState<[number, number]>([12.9716, 77.5946]);
-  const [requestMarkerLocation, setRequestMarkerLocation] = useState<
-    [number, number]
-  >([0, 0]);
-  const [sctn, setSctn] = useState(Sctn.CURRENT);
-  const [agency, setAgency] = useState<IAgency | null>(null);
-  const [modalIsOpen, setIsOpen] = useState(false);
-
-  function openModal() {
-    setIsOpen(true);
+export default function LoginPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [err, setErr] = useState('');
+  const router = useRouter();
+  if (token) {
+    router.push('/map');
   }
 
-  function afterOpenModal() {}
+  useEffect(() => {
+    setErr('');
+  }, [email, password]);
 
-  function closeModal() {
-    setIsOpen(false);
-  }
-  const handleOnSelect = (agency: IAgency) => {
-    setAgency(agency);
-    openModal();
+  const login = async () => {
+    // validate email and pass
+    if (
+      !email ||
+      !password ||
+      !/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)
+    ) {
+      setErr('Invalid credentials, try again...');
+      return;
+    }
+
+    try {
+      await axios
+        .post('/agencies/login', {
+          email,
+          password,
+        })
+        .then((v) => {
+          setToken(v.data);
+          axios.interceptors.request.use(
+            (config) => {
+              // Get the JWT token from your storage (e.g., localStorage, sessionStorage, or a variable)
+              const tkn = v.data.token;
+
+              // Add the token to the Authorization header with the "Bearer" scheme
+              if (tkn) {
+                config.headers['Authorization'] = `Bearer ${tkn}`;
+              }
+              return config;
+            },
+            (error) => {
+              return Promise.reject(error);
+            }
+          );
+          router.push('/map');
+        });
+    } catch (error: unknown) {
+      if (isAxiosError(error))
+        if (!error?.response) setErr('No server response, try again later...');
+        else if (error.response?.status === 401)
+          setErr('Invalid credentials, try again...');
+    }
   };
-  const handleSubmit = () => {};
-  return (
-    <div>
-      <Map
-        containerRef={mapRef}
-        markerPosition={current}
-        requestMarkerLocation={requestMarkerLocation}
-        setRequestMarkerLocation={setRequestMarkerLocation}
-        handleOnSelect={handleOnSelect}
-        onClick={(loc: [number, number]) => setRequestMarkerLocation(loc)}
-        className='absolute -z-50'
-      />
-      <div className='absolute bottom-4 right-4 top-4 flex min-w-[33%] flex-col items-center gap-4 overflow-y-scroll rounded-3xl bg-slate-300 p-5'>
-        <Switcher
-          isChecked={sctn != Sctn.CURRENT}
-          handleCheckboxChange={() => {
-            if (sctn == Sctn.CURRENT) setSctn(Sctn.MY);
-            else setSctn(Sctn.CURRENT);
-          }}
-        />
-        {sctn == Sctn.CURRENT ? (
-          <CurrentRequests mapRef={mapRef} setCurrentLocation={setCurrent} />
-        ) : (
-          <MyRequests requestMarkerLocation={requestMarkerLocation} />
-        )}
-      </div>
-      <Modal
-        isOpen={modalIsOpen}
-        onAfterOpen={afterOpenModal}
-        onRequestClose={closeModal}
-      >
-        <button onClick={closeModal}>close</button>
-        <form
-          className='flex flex-col gap-4 text-black'
-          onSubmit={handleSubmit}
-        >
-          <h3>Create request for {agency?.name}</h3>
-          <input placeholder='Name' />
-          <input placeholder='Address' />
-          <label className='block text-sm font-medium'>
-            Request uses the current red marker location{' '}
-            {'(Double Click on Map to select location)'}.
-          </label>
-          <button
-            className='select-none rounded-lg bg-green-500 px-6 py-3 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none'
-            type='submit'
-            data-ripple-light='true'
-          >
-            Create
-          </button>
-        </form>
-      </Modal>
-    </div>
-  );
-}
 
-function Switcher({
-  isChecked,
-  handleCheckboxChange,
-}: {
-  isChecked: boolean;
-  handleCheckboxChange: () => void;
-}) {
   return (
-    <div className='text-black'>
-      <label className='themeSwitcherTwo shadow-card relative inline-flex cursor-pointer select-none items-center justify-center rounded-md bg-white p-1'>
-        <input
-          type='checkbox'
-          className='sr-only'
-          checked={isChecked}
-          onChange={handleCheckboxChange}
-        />
-        <span
-          className={`flex items-center space-x-[6px] rounded px-[18px] py-2 text-sm font-medium ${
-            !isChecked ? 'text-primary bg-[#d5d8de]' : 'text-body-color'
-          }`}
+    <div className='h-screen'>
+      <main className='flex h-5/6 items-center justify-center'>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            login();
+          }}
+          className='flex w-1/5 flex-col items-center justify-center gap-6'
         >
-          Current Requests
-        </span>
-        <span
-          className={`flex items-center space-x-[6px] rounded px-[18px] py-2 text-sm font-medium ${
-            isChecked ? 'text-primary bg-[#d5d8de]' : 'text-body-color'
-          }`}
-        >
-          My Requests
-        </span>
-      </label>
+          <h1>Login</h1>
+          {err && <MessageBox>{err}</MessageBox>}
+          <InputBox
+            className='w-full'
+            type='email'
+            placeholder='Email'
+            required
+            onInput={(e) => setEmail((e.target as HTMLInputElement).value)}
+          />
+          <InputBox
+            className='w-full'
+            type='password'
+            placeholder='Password'
+            required
+            onInput={(e) => setPassword((e.target as HTMLInputElement).value)}
+          />
+          <TextButton type='submit' className='w-full'>
+            Log in
+          </TextButton>
+        </form>
+      </main>
     </div>
   );
 }
